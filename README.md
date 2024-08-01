@@ -6,4 +6,5 @@ This repo is for setting up the K8s cluster & Grafana Dashboard for Local Machin
 -   Plan is to use python for gettig live metrics of system usage.
 
 ## Steps to setup Prometheus & Geafana
--   Install helm
+-   Reference(https://github.com/iam-veeramalla/prometheus-Grafana-Zero-to-Hero) (https://www.youtube.com/watch?v=TyBsKMTDl1Q&t=820s)
+-   Install Minikube, Kubectl, Helm
