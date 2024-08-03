@@ -1,7 +1,32 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pg-namespace
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-grafana-config
+  namespace: pg-namespace
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+      - job_name: 'cpu_exporter'
+        static_configs:
+          - targets: ['localhost:8000']
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus-deployment
+  namespace: pg-namespace
   labels:
     app: prometheus
 spec:
@@ -16,7 +41,7 @@ spec:
     spec:
       containers:
       - name: prometheus
-        image: prom/prometheus
+        image: prom/prometheus:latest
         ports:
         - containerPort: 9090
         volumeMounts:
@@ -27,7 +52,7 @@ spec:
       volumes:
       - name: prometheus-config-volume
         configMap:
-          name: prometheus-config
+          name: prometheus-grafana-config
       - name: prometheus-storage-volume
         emptyDir: {}
 
@@ -36,6 +61,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus-service
+  namespace: pg-namespace
   labels:
     app: prometheus
 spec:
@@ -47,58 +73,44 @@ spec:
   selector:
     app: prometheus
 
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prometheus-config
-data:
-  prometheus.yml: |
-    global:
-      scrape_interval: 15s
-    scrape_configs:
-      - job_name: 'prometheus'
-        static_configs:
-          - targets: ['localhost:9090']
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: grafana-deployment
+#   labels:
+#     app: grafana
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: grafana
+#   template:
+#     metadata:
+#       labels:
+#         app: grafana
+#     spec:
+#       containers:
+#       - name: grafana
+#         image: grafana/grafana
+#         ports:
+#         - containerPort: 3000
+#         env:
+#         - name: GF_SECURITY_ADMIN_PASSWORD
+#           value: "admin"
 
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: grafana-deployment
-  labels:
-    app: grafana
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: grafana
-  template:
-    metadata:
-      labels:
-        app: grafana
-    spec:
-      containers:
-      - name: grafana
-        image: grafana/grafana
-        ports:
-        - containerPort: 3000
-        env:
-        - name: GF_SECURITY_ADMIN_PASSWORD
-          value: "admin"
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana-service
-  labels:
-    app: grafana
-spec:
-  type: NodePort
-  ports:
-  - port: 3000
-    targetPort: 3000
-    nodePort: 30091
-  selector:
-    app: grafana
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: grafana-service
+#   labels:
+#     app: grafana
+# spec:
+#   type: NodePort
+#   ports:
+#   - port: 3000
+#     targetPort: 3000
+#     nodePort: 30091
+#   selector:
+#     app: grafana
