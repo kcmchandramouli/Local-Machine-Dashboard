@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service

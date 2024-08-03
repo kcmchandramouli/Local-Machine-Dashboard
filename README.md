@@ -34,6 +34,8 @@ This repo is for setting up the K8s cluster & Grafana Dashboard for Local Machin
 
 -   Create a ConfigMap(configmap.yml)
     -    For managing configuration data in Kubernetes, enhancing scalability, security, and maintainability.
+    -    A ConfigMap in Kubernetes is used to store configuration data in a key-value format that can be consumed by your applications.
+    -    ConfigMaps facilitate rolling updates by allowing changes to be applied to a subset of pods at a time, reducing downtime.
 
 -   Create a Deployment for prometheus(deployment.yml)
     -   For enabling declarative updated to the application.
