@@ -65,11 +65,11 @@ metadata:
   labels:
     app: prometheus
 spec:
-  type: NodePort
+  # type: NodePort
   ports:
   - port: 9090
     targetPort: 9090
-    nodePort: 30090
+    # nodePort: 30090
   selector:
     app: prometheus
 
@@ -109,10 +109,45 @@ metadata:
   labels:
     app: grafana
 spec:
-  type: NodePort
+  # type: NodePort
   ports:
   - port: 3000
     targetPort: 3000
-    nodePort: 30091
+    # nodePort: 30091
   selector:
     app: grafana
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: pg-namespace
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    # Ingress rule for Prometheus
+    - host: pg-prometheus.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-service
+                port:
+                  number: 9090
+
+    # Ingress rule for Grafana
+    - host: pg-grafana.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  number: 3000
+

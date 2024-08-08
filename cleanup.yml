@@ -32,3 +32,11 @@ kind: Service
 metadata:
   name: grafana-service
   namespace: pg-namespace
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: pg-namespace
+

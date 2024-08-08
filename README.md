@@ -56,3 +56,23 @@ This repo is for setting up the K8s cluster & Grafana Dashboard for Local Machin
 
 # Note: 
 -   At the moment we need to apply every yml file & then only we can setup the dashboard.
+
+
+## K8s
+-   Use deployment_service.yml to deploy all the resources
+    -   use "kubectl apply -f deployment_services.yml" command
+
+-   Use cleanup.yml to clean the created services at once.
+    -   use "kubectl delete -f cleanup.yml" command
+
+-   We are using Nginx ingress to create DNS for Prometheus & Grafana
+    -   use "kubectl get ingress -n `<namespace>`" command to get the ingress
+
+-   After creating ingress, Take a note of the IP address using the command "kubectl get ingress -n `<namespace>`"
+-   Inorder to route thew ingress to the IP address, provide the IP Address & DNS name in /etc/hosts
+    -   You need sudo rights to access /etc/hosts
+
+# Note: 
+-   To use ingress with Minikube, we need to enable it first. 
+    -   Use "minikube addons enable ingress" command to enable it.
+    -   Use "minikube addons list" to get the list of addons.
